@@ -28,6 +28,7 @@
 
 .token-type-card.active {
     border: 1px solid #364aff;
+    background-color: #fff;
 }
 
 .active-tick {
@@ -40,4 +41,14 @@
     margin-bottom: 0;
     color: #ababab;
     font-size: 13px;
+}
+
+.token-type-label.active {
+    color: #364aff;
+}
+
+@media (max-width: 768px) {
+    .token-type-card {
+        width: 100%;
+    }
 }

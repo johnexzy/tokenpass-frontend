@@ -37,7 +37,7 @@
               <div
                 v-for="(type, index) in tokenTypes"
                 :key="index"
-                class="col-12 col-md-auto col-lg-auto"
+                class="col-6 col-md-auto col-lg-auto"
               >
                 <q-card
                   @click="selectTokenType(type.id)"
@@ -60,7 +60,12 @@
                   </svg>
                   <q-card-section class="column items-center justify-center">
                     <span v-html="type.icon"></span>
-                    <p class="token-type-label">{{ type.label }}</p>
+                    <p
+                      class="token-type-label"
+                      :class="type.id == formData.type ? 'active' : ''"
+                    >
+                      {{ type.label }}
+                    </p>
                   </q-card-section>
                 </q-card>
               </div>
