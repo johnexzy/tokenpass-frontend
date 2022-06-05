@@ -1,6 +1,6 @@
 <template>
   <q-layout view="lHh Lpr lFf">
-    <q-header class="bg-white">
+    <q-header class="bg-page">
       <q-toolbar class="container justify-between">
         <q-btn
           class="mobile-only"
@@ -76,7 +76,7 @@
       </q-list>
     </q-drawer>
 
-    <q-page-container>
+    <q-page-container class="bg-page">
       <router-view />
     </q-page-container>
   </q-layout>
