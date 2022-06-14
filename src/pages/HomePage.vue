@@ -13,22 +13,18 @@
 
         <div class="row q-col-gutter-md">
           <div class="col-12 col-md-12 col-lg-12 q-mb-xl">
-            <label
-              class="form-label"
-              for=""
+            <label class="form-label" for="">Title (required)</label>
+            <br />
+            <br />
+            <q-input
+              outlined
+              v-model="formData.title"
               placeholder="Set a title for this content"
-              >Title (required)</label
-            >
-            <br />
-            <br />
-            <q-input outlined v-model="formData.title" />
+            />
           </div>
 
-          <div class="col-12 col-md-12 col-lg-12">
-            <label
-              class="form-label"
-              for=""
-              placeholder="Set a title for this content"
+          <div class="col-12 col-md-12 col-lg-12 q-mb-xl">
+            <label class="form-label" for=""
               >Choose what type of content you want to Token Gate</label
             >
             <br />
@@ -71,6 +67,123 @@
               </div>
             </div>
           </div>
+
+          <div class="col-12 col-md-12 col-lg-12 q-mb-xl">
+            <FileUploader
+              v-model="formData.attachment"
+              :upload-multiple="false"
+            />
+          </div>
+
+          <div class="col-12 col-md-12 col-lg-12 q-mb-xl">
+            <label class="form-label" for="">Description</label>
+            <br />
+            <br />
+            <q-input
+              placeholder="Write a short description about your content"
+              type="textarea"
+              outlined
+              v-model="formData.description"
+            />
+          </div>
+
+          <div class="col-12 col-md-12 col-lg-12 q-mb-xl">
+            <label class="form-label" for="">Tagline</label>
+            <br />
+            <br />
+            <q-input
+              placeholder="Write a short description about your content"
+              outlined
+              v-model="formData.description"
+            />
+          </div>
+
+          <div class="col-12 col-md-12 col-lg-12 q-mb-xl">
+            <label class="form-label" for="">Add Gating</label>
+            <br />
+            <label class="text-grey-6" for=""
+              ><small
+                >The following tokens will be required before your content is
+                viewable
+              </small></label
+            >
+            <br />
+            <br />
+            <q-input
+              placeholder="Write a short description about your content"
+              outlined
+              v-model="formData.description"
+            />
+          </div>
+
+          <div class="col-12 col-md-12 col-lg-12 q-mb-xl">
+            <label class="form-label" for=""
+              ><q-checkbox
+                v-model="formData.subscription.allow"
+                color="primary"
+              />
+              Allow Subscription
+              <q-icon
+                color="grey-8"
+                class="pointer"
+                name="ion-information-circle"
+              >
+                <q-tooltip
+                  anchor="top right"
+                  self="top middle"
+                  class="bg-amber text-black shadow-4"
+                  :offset="[10, 10]"
+                >
+                  Subscriptions allow you to collect ERC-20 token payments for
+                  users that may not hold tokens that you specify. Gas fees will
+                  apply.
+                </q-tooltip>
+              </q-icon>
+            </label>
+            <br />
+            <br />
+            <div class="row q-col-gutter-md">
+              <div class="col-12 col-md-2 col-lg-2">
+                <q-input
+                  placeholder="Price"
+                  outlined
+                  type="number"
+                  v-model="formData.subscription.price"
+                >
+                  <template v-slot:prepend>
+                    <q-icon name="ion-pricetag" color="grey-6" />
+                  </template>
+                </q-input>
+              </div>
+              <div class="col-12 col-md-4 col-lg-4">
+                <q-input
+                  placeholder="Duration"
+                  outlined
+                  type="number"
+                  v-model="formData.subscription.duration"
+                >
+                  <template v-slot:append>
+                    <q-separator vertical />
+                    <label for="" class="text-caption grey-6 q-pl-sm"
+                      >Days</label
+                    >
+                  </template>
+                </q-input>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-12 col-md-12 col-lg-12">
+            <q-btn
+              label="CREATE"
+              unelevated
+              color="primary"
+              text-color="black"
+              class="full-width"
+              size="lg"
+              type="submit"
+            />
+          </div>
         </div>
       </div>
     </section>
@@ -81,13 +194,23 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
+import FileUploader from 'src/components/FileUploader.vue';
 
 export default defineComponent({
   name: 'HomePage',
   data() {
     const formData = {
       title: '',
-      type: '',
+      type: 1,
+      attachment: {},
+      description: '',
+      tagline: '',
+      gating: '',
+      subscription: {
+        allow: false,
+        price: null,
+        duration: null,
+      },
     };
 
     const tokenTypes = [
@@ -119,6 +242,9 @@ export default defineComponent({
     ];
 
     return { formData, tokenTypes };
+  },
+  components: {
+    FileUploader,
   },
   methods: {
     selectTokenType(id) {
