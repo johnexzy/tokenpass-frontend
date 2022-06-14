@@ -156,7 +156,7 @@
 import { defineComponent } from 'vue';
 
 export default defineComponent({
-  name: 'HomePage',
+  name: 'DetailPage',
   data() {
     return {
       videoPlay: false,
