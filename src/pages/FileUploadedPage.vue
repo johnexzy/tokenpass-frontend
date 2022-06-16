@@ -135,7 +135,7 @@ import { defineComponent } from 'vue';
 import { copyToClipboard } from 'quasar';
 
 export default defineComponent({
-  name: 'FileRemovedPage',
+  name: 'FileUploadedPage',
   data() {
     return {
       URLCopyTooltip: false,

@@ -25,6 +25,10 @@ const routes: RouteRecordRaw[] = [
         path: '/helpresource',
         component: () => import('src/pages/HelpResourcePage.vue'),
       },
+      {
+        path: '/errorempty',
+        component: () => import('src/pages/ErrorEmptyPage.vue'),
+      }
     ],
   },
 
