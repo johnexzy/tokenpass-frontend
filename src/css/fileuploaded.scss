@@ -1,0 +1,32 @@
+.fileupload-section-title {
+    font-size: 20px;
+    line-height: 30px;
+    font-weight: bold;
+    margin-top: 0;
+}
+
+.fileupload-card {
+    padding: 100px 50px;
+    border-radius: 6px;
+    border: 1px solid rgb(221, 221, 221);
+}
+
+.fileupload-link {
+    font-size: 30px;
+    color: #136cfc;
+    text-decoration: none;
+}
+
+.fileupload-social {
+    display: flex;
+    justify-content: center;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+
+.fileupload-social li {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
