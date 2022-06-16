@@ -19,13 +19,38 @@
           <h1 class="fileupload-section-title text-center q-mb-lg">
             Content successfully uploaded to:
           </h1>
-          <div class="text-center q-mb-lg">
+          <div class="flex flex-center q-mb-lg">
             <router-link
-              class="fileupload-link text-center"
+              class="fileupload-link text-center q-mr-md"
               to="https://tokenpass.ai/link/iEutYiQ390"
               target="_blank"
               >https://tokenpass.ai/link/iEutYiQ390</router-link
             >
+            <q-btn
+              flat
+              round
+              size="sm"
+              @click="copyURL('https://tokenpass.ai/link/iEutYiQ390')"
+              ><svg
+                width="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M0 8H16V24H0V8ZM8 0V4H20V16H24V0H8Z"
+                  fill="#212121"
+                /></svg
+            ></q-btn>
+            <transition
+              appear
+              enter-active-class="animated fadeInRight"
+              leave-active-class="animated fadeOutRight"
+            >
+              <q-badge color="blue" v-show="URLCopyTooltip == true">
+                URL copied
+              </q-badge>
+            </transition>
           </div>
           <p class="text-center text-black q-mb-lg">SHARE WITH FIRENDS</p>
           <ul class="fileupload-social">
@@ -107,13 +132,29 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
+import { copyToClipboard } from 'quasar';
 
 export default defineComponent({
   name: 'FileRemovedPage',
   data() {
-    return {};
+    return {
+      URLCopyTooltip: false,
+    };
   },
   components: {},
-  methods: {},
+  methods: {
+    copyURL(val) {
+      this.URLCopyTooltip = true;
+      copyToClipboard(val)
+        .then(() => {
+          setTimeout(() => {
+            this.URLCopyTooltip = false;
+          }, 500);
+        })
+        .catch(() => {
+          this.URLCopyTooltip = false;
+        });
+    },
+  },
 });
 </script>
