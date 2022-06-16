@@ -5,8 +5,14 @@ const routes: RouteRecordRaw[] = [
     path: '/',
     component: () => import('layouts/MainLayout.vue'),
     children: [
-      { path: '', component: () => import('src/pages/HomePage.vue') },
-      { path: '/detail', component: () => import('src/pages/DetailPage.vue') },
+      {
+        path: '',
+        component: () => import('src/pages/HomePage.vue'),
+      },
+      {
+        path: '/detail',
+        component: () => import('src/pages/DetailPage.vue'),
+      },
       {
         path: '/fileremoved',
         component: () => import('src/pages/FileRemovedPage.vue'),
@@ -14,6 +20,10 @@ const routes: RouteRecordRaw[] = [
       {
         path: '/fileuploaded',
         component: () => import('src/pages/FileUploadedPage.vue'),
+      },
+      {
+        path: '/helpresource',
+        component: () => import('src/pages/HelpResourcePage.vue'),
       },
     ],
   },
