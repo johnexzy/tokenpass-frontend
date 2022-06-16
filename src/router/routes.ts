@@ -33,6 +33,10 @@ const routes: RouteRecordRaw[] = [
         path: '/modal',
         component: () => import('src/pages/ModalPage.vue'),
       },
+      {
+        path: '/profilesetting',
+        component: () => import('src/pages/ProfileSettingPage.vue'),
+      },
     ],
   },
 

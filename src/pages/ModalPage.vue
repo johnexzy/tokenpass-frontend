@@ -1,6 +1,6 @@
 <template>
   <q-page>
-    <section class="errorempty-page-wrapper pt-100 pb-100">
+    <section class="modal-page-wrapper pt-100 pb-100">
       <div class="container">
         <!-- <q-btn
           @click="openModal"
