@@ -11,6 +11,10 @@ const routes: RouteRecordRaw[] = [
         path: '/fileremoved',
         component: () => import('src/pages/FileRemovedPage.vue'),
       },
+      {
+        path: '/fileuploaded',
+        component: () => import('src/pages/FileUploadedPage.vue'),
+      },
     ],
   },
 
