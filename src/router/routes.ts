@@ -28,7 +28,11 @@ const routes: RouteRecordRaw[] = [
       {
         path: '/errorempty',
         component: () => import('src/pages/ErrorEmptyPage.vue'),
-      }
+      },
+      {
+        path: '/modal',
+        component: () => import('src/pages/ModalPage.vue'),
+      },
     ],
   },
 
