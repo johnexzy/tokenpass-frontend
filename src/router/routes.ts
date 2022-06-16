@@ -37,6 +37,10 @@ const routes: RouteRecordRaw[] = [
         path: '/profilesetting',
         component: () => import('src/pages/ProfileSettingPage.vue'),
       },
+      {
+        path: '/dashboard',
+        component: () => import('src/pages/DashboardPage.vue'),
+      },
     ],
   },
 
