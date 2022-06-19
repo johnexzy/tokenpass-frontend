@@ -44,12 +44,14 @@
 .locked-content-wrapper {
     position: relative;
     padding: 100px 50px;
+    background: transparent;
+    z-index: 1;
 }
 
 .locked-content-wrapper::before {
     content: '';
     position: absolute;
-    background-color: #818181;
+    background-color: #818181bb;
     width: 100%;
     height: 100%;
     z-index: -1;

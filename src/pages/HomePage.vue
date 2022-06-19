@@ -18,6 +18,7 @@
             <br />
             <q-input
               outlined
+              class="bg-white"
               v-model="formData.title"
               placeholder="Set a title for this content"
             />
@@ -80,6 +81,7 @@
             <br />
             <br />
             <q-input
+              class="bg-white"
               placeholder="Write a short description about your content"
               type="textarea"
               outlined
@@ -92,6 +94,7 @@
             <br />
             <br />
             <q-input
+              class="bg-white"
               placeholder="Write a short description about your content"
               outlined
               v-model="formData.description"
@@ -112,6 +115,7 @@
             <q-input
               placeholder="Write a short description about your content"
               outlined
+              class="bg-white"
               v-model="formData.description"
             />
           </div>
@@ -148,6 +152,7 @@
                   placeholder="Price"
                   outlined
                   type="number"
+                  class="bg-white"
                   v-model="formData.subscription.price"
                 >
                   <template v-slot:prepend>
@@ -160,6 +165,7 @@
                   placeholder="Duration"
                   outlined
                   type="number"
+                  class="bg-white"
                   v-model="formData.subscription.duration"
                 >
                   <template v-slot:append>
