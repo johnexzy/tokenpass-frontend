@@ -47,7 +47,7 @@
               enter-active-class="animated fadeInRight"
               leave-active-class="animated fadeOutRight"
             >
-              <q-badge color="blue" v-show="URLCopyTooltip == true">
+              <q-badge color="primary" v-show="URLCopyTooltip == true">
                 URL copied
               </q-badge>
             </transition>
@@ -135,7 +135,7 @@ import { defineComponent } from 'vue';
 import { copyToClipboard } from 'quasar';
 
 export default defineComponent({
-  name: 'FileRemovedPage',
+  name: 'FileUploadedPage',
   data() {
     return {
       URLCopyTooltip: false,
