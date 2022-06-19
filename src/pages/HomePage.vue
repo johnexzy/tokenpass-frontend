@@ -247,9 +247,9 @@ export default defineComponent({
     FileUploader,
   },
   methods: {
-    selectTokenType(id) {
+    selectTokenType(id: number) {
       if (this.formData.type == id) {
-        this.formData.type = '';
+        this.formData.type = 1;
       } else {
         this.formData.type = id;
       }

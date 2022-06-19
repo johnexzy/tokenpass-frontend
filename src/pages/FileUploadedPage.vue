@@ -143,7 +143,7 @@ export default defineComponent({
   },
   components: {},
   methods: {
-    copyURL(val) {
+    copyURL(val: string) {
       this.URLCopyTooltip = true;
       copyToClipboard(val)
         .then(() => {

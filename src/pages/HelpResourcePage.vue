@@ -46,7 +46,7 @@
 import { defineComponent } from 'vue';
 
 export default defineComponent({
-  name: 'FileRemovedPage',
+  name: 'HelpResouce',
   data() {
     return {};
   },
