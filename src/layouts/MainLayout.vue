@@ -1,3 +1,67 @@
+<script lang="ts" setup>
+import { ref, computed } from 'vue';
+import EssentialLink from 'components/EssentialLink.vue';
+
+import {
+  switchNetwork,
+  connectCoinbase,
+  connectMetaMask,
+  WalletConnect,
+  WalletIsConnected,
+} from 'src/scripts/wallet_util';
+import { useUserStore } from '../stores/user';
+const $store = useUserStore();
+
+/**
+ * Connect WallectConnect
+ */
+const ConnectWalletConnect = () => WalletConnect($store);
+
+/**
+ * Connect CoinBase Wallet
+ */
+const ConnectCoinBaseWallet = () => connectCoinbase($store);
+
+const LoadWallet = async () => {
+  const res = await WalletIsConnected($store);
+  console.log(res);
+};
+(async () => {
+  await LoadWallet();
+})();
+/**
+ * Connect MetaMask Wallet
+ */
+const ConnectMetaMaskWallet = () => connectMetaMask($store);
+
+const openModal = computed({
+  get(): boolean {
+    return $store.walletModal;
+  },
+  set(value: boolean) {
+    $store.openWalletModal = value;
+  },
+});
+
+const leftDrawerOpen = ref(false);
+const toggleLeftDrawer = () => {
+  leftDrawerOpen.value = !leftDrawerOpen.value;
+};
+const essentialLinks = ref([
+  {
+    title: 'Documentation',
+    caption: '',
+    icon: '',
+    link: '/documentation',
+  },
+  {
+    title: 'FAQ',
+    caption: '',
+    icon: '',
+    link: '/',
+  },
+]);
+</script>
 <template>
   <q-layout view="lHh Lpr lFf">
     <q-header class="bg-page">
@@ -15,12 +79,7 @@
 
         <router-link style="text-decoration: none" to="/">
           <q-toolbar-title
-            class="
-              text-black text-subtitle1
-              flex
-              items-center
-              text-weight-medium
-            "
+            class="text-black text-subtitle1 flex items-center text-weight-medium"
           >
             <svg
               class="q-mr-sm"
@@ -51,6 +110,7 @@
             </q-btn>
             <q-btn class="desktop-only" no-caps flat> Help </q-btn>
             <q-btn
+              @click="openModal = true"
               no-caps
               text-color="black"
               color="primary"
@@ -78,47 +138,12 @@
 
     <q-page-container class="bg-page">
       <router-view />
+
+      <wallet-dialogue
+        :connectCoinbase="ConnectCoinBaseWallet"
+        :connectMetaMask="ConnectMetaMaskWallet"
+        :connectWalletConnect="ConnectWalletConnect"
+      />
     </q-page-container>
   </q-layout>
 </template>
-
-<script lang="ts">
-import { defineComponent } from 'vue';
-import EssentialLink from 'components/EssentialLink.vue';
-
-const linksList = [
-  {
-    title: 'Documentation',
-    caption: '',
-    icon: '',
-    link: '/documentation',
-  },
-  {
-    title: 'FAQ',
-    caption: '',
-    icon: '',
-    link: '/',
-  },
-];
-
-export default defineComponent({
-  name: 'MainLayout',
-
-  components: {
-    EssentialLink,
-  },
-
-  data() {
-    return {
-      leftDrawerOpen: false,
-      essentialLinks: linksList,
-    };
-  },
-
-  methods: {
-    toggleLeftDrawer() {
-      this.leftDrawerOpen = !this.leftDrawerOpen;
-    },
-  },
-});
-</script>
