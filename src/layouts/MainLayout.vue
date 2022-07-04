@@ -8,7 +8,7 @@ import {
   connectMetaMask,
   WalletConnect,
   WalletIsConnected,
-} from 'src/scripts/wallet_util';
+} from 'src/scripts/utils/walletUtil';
 import { useUserStore } from '../stores/user';
 const $store = useUserStore();
 
