@@ -112,15 +112,49 @@
             >
             <br />
             <br />
-            <q-btn
-              color="primary"
-              unelevated
-              icon="add"
-              padding="lg"
-              text-color="black"
-              size="lg"
-              @click="addNewTokenModal = true"
-            />
+            <div class="row q-col-gutter-lg-md">
+              <q-card
+                flat
+                class="token-type-card-sm q-ma-md"
+                v-for="(t, i) in formData.token"
+                :key="i"
+              >
+                <q-card-section
+                  dense
+                  class="column items-center justify-center"
+                >
+                  <p class="token-type-name">COWRY</p>
+                  <p class="token-type-address">
+                    {{ format_address(t.contract_address) }}
+                  </p>
+                </q-card-section>
+                <q-card-actions
+                  horizontal
+                  align="right"
+                  dense
+                  class="q-ma-none token-action-delete"
+                >
+                  <q-btn
+                    round
+                    text-color="red"
+                    flat
+                    size="sm"
+                    icon="delete"
+                    @click="removeToken(t)"
+                  />
+                </q-card-actions>
+              </q-card>
+              <q-btn
+                color="primary"
+                unelevated
+                icon="add"
+                class="token-type-card-btn q-ma-md"
+                padding="lg"
+                text-color="black"
+                size="lg"
+                @click="addNewTokenModal = true"
+              />
+            </div>
           </div>
 
           <div class="col-12 col-md-12 col-lg-12 q-mb-xl">
@@ -253,8 +287,8 @@
               text-color="black"
               label="Add"
               color="primary"
-              @click="formData.token.push(newToken)"
-              v-close-popup
+              @click="addNewToken(newToken)"
+              :loading="isLoadingToken"
               unelevated
               style="width: 150px"
             />
@@ -279,7 +313,11 @@
 import FileUploader from 'src/components/FileUploader.vue';
 import { gatingFormData, tokenType } from 'src/stores/types/storeTypes';
 import { Ref, ref } from 'vue';
+import { useQuasar } from 'quasar';
+// import { checkIfWalletIsConnected } from 'src/scripts/wallet_util';
+import TokenUtils from 'src/scripts/contractUtils';
 
+const $q = useQuasar();
 const formData: Ref<gatingFormData> = ref({
   title: '',
   type: 'link',
@@ -295,14 +333,13 @@ const formData: Ref<gatingFormData> = ref({
   token: [],
 });
 
-const newToken: tokenType = {
+const newToken: Ref<tokenType> = ref({
   blockchain: '',
   token_standard: '',
   contract_address: '',
   token_id: '',
   amount_required: '',
-};
-
+});
 const token_standard = [
   {
     label: 'ERC1155',
@@ -336,6 +373,7 @@ const blockchain = [
   },
 ];
 const addNewTokenModal = ref(false);
+const isLoadingToken = ref(false);
 const itemTypes: { value: string; label: string; icon: string }[] = [
   {
     value: 'link',
@@ -373,6 +411,53 @@ function selectTokenType(value: string) {
 }
 
 function addNewToken(token: tokenType) {
+  isLoadingToken.value = true;
+
+  //check if address is valid
+  if (!TokenUtils.isValidAddress(token.contract_address)) {
+    isLoadingToken.value = false;
+    $q.notify({
+      color: 'red',
+      message: 'Please enter a valid address',
+      textColor: 'white',
+    });
+
+    return;
+  }
   formData.value.token.push(token);
+  newToken.value = {
+    blockchain: '',
+    token_standard: '',
+    contract_address: '',
+    token_id: '',
+    amount_required: '',
+  };
+  isLoadingToken.value = false;
+  addNewTokenModal.value = false;
+}
+function format_address(account: string) {
+  return account.substr(0, 5) + '...' + account.substr(-4);
+}
+
+function removeToken(token: tokenType) {
+  $q.dialog({
+    title: 'Delete `' + format_address(token.contract_address) + '` ?',
+    message: '',
+    cancel: true,
+    persistent: true,
+  })
+    .onOk(() => {
+      // console.log('>>>> OK')
+      formData.value.token.splice(formData.value.token.indexOf(token), 1);
+    })
+    .onOk(() => {
+      $q.notify('Deleted Successfully');
+    })
+    .onCancel(() => {
+      // console.log('>>>> Cancel')
+    })
+    .onDismiss(() => {
+      // console.log('I am triggered on both OK and Cancel')
+    });
 }
 </script>

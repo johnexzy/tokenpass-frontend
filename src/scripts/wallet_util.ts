@@ -116,6 +116,7 @@ const isMetamaskConnected = async (
        * save to state
        */
       $store.account = accounts[0];
+      $store.provider = Wallet.provider;
       return metaMaskProvider;
     }
 
@@ -170,7 +171,7 @@ const isCoinBaseConnected = async (
        * save to state
        */
       $store.account = accounts[0];
-
+      $store.provider = Wallet.provider;
       return coinBaseProvider;
     }
 
@@ -218,10 +219,10 @@ const isWallectConnectConnected = async (
     // const web3 = new Web3(Wallet.provider);
 
     //  Get Accounts
-    await Wallet.provider.enable();
+    // await Wallet.provider.enable();
     const accounts: string[] = Wallet.provider.accounts;
     // console.log(accounts);
-    console.log(accounts[0]);
+    console.log(accounts);
     if (accounts.length !== 0) {
       // await Wallet.provider.enable();
       Wallet.provider.on('chainChanged', (chainId: any) => {
@@ -239,11 +240,13 @@ const isWallectConnectConnected = async (
        * Save to state
        */
       $store.account = accounts[0];
-
+      $store.provider = Wallet.provider;
       return Wallet.provider;
     }
+    return false;
   } catch (error) {
     console.log('Unexpected Error');
+    return false;
   }
 };
 const switchAccount = async (
@@ -470,7 +473,7 @@ async function WalletConnect(
     Wallet.provider = provider;
     if (accounts.length !== 0) {
       console.log(accounts[0]);
-
+      $store.provider = Wallet.provider;
       $store.account = accounts[0];
 
       return true;

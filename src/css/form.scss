@@ -1,54 +1,97 @@
 .form-title {
-    font-size: 40px;
-    line-height: 40px;
-    font-weight: 600;
+  font-size: 40px;
+  line-height: 40px;
+  font-weight: 600;
 }
 
 .form-content {
-    font-size: 14px;
-    color: $text;
+  font-size: 14px;
+  color: $text;
 }
 
 .form-label {
-    font-weight: 600;
+  font-weight: 600;
 }
 
 .token-type-card {
-    width: 208px;
-    height: 208px;
-    background-color: #fcfcfc;
-    display: flex;
-    flex-flow: column;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    cursor: pointer;
-    border-radius: 8px;
+  width: 208px;
+  height: 208px;
+  background-color: #fcfcfc;
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  cursor: pointer;
+  border-radius: 8px;
 }
 
+.token-type-card-sm {
+  width: 280px;
+  height: 120px;
+  font-family: 'Courier New', Courier, monospace;
+  background-color: #fff9d7;
+  // display: flex;
+  color: #333;
+  font-weight: 800;
+  flex-flow: column;
+  // align-items: center;
+  // justify-content: center;
+  position: relative;
+  cursor: pointer;
+  border-radius: 8px;
+}
+.token-action-delete {
+  margin-right: -20px;
+  margin-top: -10px;
+}
+.token-type-card-btn {
+  width: 120px;
+  height: 120px;
+  background-color: #fff9d7;
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  cursor: pointer;
+  border-radius: 8px;
+}
 .token-type-card.active {
-    border: 1px solid #364aff;
-    background-color: #fff;
+  border: 1px solid #364aff;
+  background-color: #fff;
 }
 
 .active-tick {
-    position: absolute;
-    top: 15px;
-    right: 15px;
+  position: absolute;
+  top: 15px;
+  right: 15px;
 }
 
 .token-type-label {
-    margin-bottom: 0;
-    color: #ababab;
-    font-size: 13px;
+  margin-bottom: 0;
+  color: #ababab;
+  font-size: 13px;
+}
+.token-type-address {
+  margin-bottom: 0;
+  color: #858383;
+  font-size: 20px;
+  font-weight: 400;
+}
+.token-type-name {
+  margin-bottom: 0;
+  color: #353333;
+  font-size: 24px;
+  font-weight: 800;
 }
 
 .token-type-label.active {
-    color: #364aff;
+  color: #364aff;
 }
 
 @media (max-width: 768px) {
-    .token-type-card {
-        width: 100%;
-    }
+  .token-type-card {
+    width: 100%;
+  }
 }

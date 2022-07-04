@@ -8,7 +8,7 @@ export const useUserStore = defineStore('user', {
     chainMismatch: false,
     walletIsLoading: true,
     account: '',
-    provider: null,
+    provider: undefined,
     reciept: null,
     isTransacting: false,
     tx: null,

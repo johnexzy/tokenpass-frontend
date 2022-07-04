@@ -8,6 +8,7 @@ const routes: RouteRecordRaw[] = [
       {
         path: '',
         component: () => import('src/pages/HomePage.vue'),
+        meta: { requiresAuth: true },
       },
       {
         path: '/detail',
@@ -28,6 +29,7 @@ const routes: RouteRecordRaw[] = [
       {
         path: '/errorempty',
         component: () => import('src/pages/ErrorEmptyPage.vue'),
+        meta: { requiresNoAuth: true },
       },
       {
         path: '/modal',
