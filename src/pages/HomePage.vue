@@ -245,8 +245,8 @@
             <q-select
               outlined
               dense
-              v-model="newToken.blockchain"
-              :options="blockchain"
+              v-model="newTokenObj.blockchain"
+              :options="Networks"
               label="Choose Blockchain"
             />
           </div>
