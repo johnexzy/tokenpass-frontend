@@ -123,7 +123,7 @@
                   dense
                   class="column items-center justify-center"
                 >
-                  <p class="token-type-name">COWRY</p>
+                  <p class="token-type-name">{{ t.token_name }}</p>
                   <p class="token-type-address">
                     {{ format_address(t.contract_address) }}
                   </p>
