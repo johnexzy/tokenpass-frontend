@@ -254,7 +254,7 @@
             <q-select
               outlined
               dense
-              v-model="newToken.token_standard"
+              v-model="newTokenObj.token_standard"
               :options="token_standard"
               label="Choose Token type"
             />
@@ -263,18 +263,18 @@
             <q-input
               dense
               outlined
-              v-model="newToken.contract_address"
+              v-model="newTokenObj.contract_address"
               label="Enter contract address for this token"
             />
           </div>
           <div class="col-12 col-md-2 col-lg-2">
-            <q-input dense outlined v-model="newToken.token_id" label="ID" />
+            <q-input dense outlined v-model="newTokenObj.token_id" label="ID" />
           </div>
           <div class="col-12 col-md-2 col-lg-2">
             <q-input
               dense
               outlined
-              v-model="newToken.amount_required"
+              v-model="newTokenObj.amount_required"
               label="Amount"
               type="number"
             />
