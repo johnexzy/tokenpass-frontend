@@ -460,4 +460,28 @@ function removeToken(token: tokenType) {
       // console.log('I am triggered on both OK and Cancel')
     });
 }
+
+function resetAddTokenForm() {
+  newTokenObj.value = {
+    blockchain: {
+      network: 'mainnet',
+      name: 'Ethereum',
+      value: 'mainnet',
+      label: 'Ethereum',
+      chainId: 1,
+      currency: 'ETH',
+      rpc: [],
+      explorer: 'https://etherscan.io',
+      api: 'https://api.etherscan.io/api?module=account&action=tokentx',
+    },
+    token_standard: {
+      label: 'ERC721',
+      value: 'erc721',
+    } as tokenStandardOptions<tokenStandard>,
+    contract_address: '',
+    token_id: '',
+    amount_required: '',
+    token_name: '',
+  };
+}
 </script>
