@@ -11,7 +11,7 @@ const routes: RouteRecordRaw[] = [
         meta: { requiresAuth: true },
       },
       {
-        path: '/detail',
+        path: '/d/:slug',
         component: () => import('src/pages/DetailPage.vue'),
       },
       {
@@ -21,6 +21,7 @@ const routes: RouteRecordRaw[] = [
       {
         path: '/fileuploaded',
         component: () => import('src/pages/FileUploadedPage.vue'),
+        meta: { requiresItemGated: true },
       },
       {
         path: '/helpresource',
