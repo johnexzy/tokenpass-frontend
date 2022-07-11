@@ -34,15 +34,6 @@ const LoadWallet = async () => {
  */
 const ConnectMetaMaskWallet = () => connectMetaMask($store);
 
-const openModal = computed({
-  get(): boolean {
-    return $store.walletModal;
-  },
-  set(value: boolean) {
-    $store.openWalletModal = value;
-  },
-});
-
 const leftDrawerOpen = ref(false);
 const toggleLeftDrawer = () => {
   leftDrawerOpen.value = !leftDrawerOpen.value;
@@ -110,7 +101,8 @@ const essentialLinks = ref([
             </q-btn>
             <q-btn class="desktop-only" no-caps flat> Help </q-btn>
             <q-btn
-              @click="openModal = true"
+              v-if="!$store.account"
+              @click="$store.openWalletModal = true"
               no-caps
               text-color="black"
               color="primary"
