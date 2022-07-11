@@ -1,5 +1,5 @@
 <template>
-  <q-dialog v-model="openModal">
+  <q-dialog v-model="store.openWalletModal">
     <div class="q-pa-lg">
       <q-card class="connect-modal">
         <q-card-section class="connect-modal-close">
@@ -101,20 +101,7 @@ const props = defineProps({
   connectCoinbase: { type: Function, required: true },
   connectWalletConnect: { type: Function, required: true },
 });
-const openModal = computed({
-  get(): boolean {
-    return store.walletModal;
-  },
-  set(value: boolean) {
-    store.openWalletModal = value;
-  },
-});
-// const walletIsDenied = computed(() => {
-//   if (store.getters['utils/Account']) {
-//     return store.getters['utils/whiteListed'];
-//   }
-//   return true;
-// });
+
 const read_more = ref(true);
 
 function toggleReadmore() {
