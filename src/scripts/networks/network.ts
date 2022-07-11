@@ -1,7 +1,11 @@
+import { NetworkType } from '../types/types';
+
 export default [
   {
     network: 'mainnet',
     name: 'Ethereum',
+    value: 'mainnet',
+    label: 'Ethereum',
     chainId: 1,
     currency: 'ETH',
     rpc: [
@@ -15,6 +19,8 @@ export default [
   {
     network: 'rinkeby',
     name: 'Rinkeby Ethereum',
+    value: 'rinkeby',
+    label: 'Rinkeby Ethereum',
     chainId: 4,
     currency: 'ETH',
     rpc: [
@@ -27,6 +33,8 @@ export default [
   {
     network: 'polygon',
     name: 'Polygon',
+    value: 'polygon',
+    label: 'Polygon',
     chainId: 137,
     currency: 'MATIC',
     rpc: [
@@ -41,6 +49,8 @@ export default [
   {
     network: 'bsc',
     name: 'Binance Smart Chain',
+    value: 'bsc',
+    label: 'Binance Smart Chain',
     chainId: 137,
     currency: 'BNB',
     rpc: [
@@ -51,4 +61,4 @@ export default [
     explorer: 'https://bscscan.com',
     api: 'https://api.bscscan.com/api?module=account&action=tokentx',
   },
-];
+] as NetworkType[];
