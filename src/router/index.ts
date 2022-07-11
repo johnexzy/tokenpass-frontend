@@ -7,7 +7,7 @@ import {
 } from 'vue-router';
 
 import routes from './routes';
-import { checkIfWalletIsConnected } from 'src/scripts/wallet_util';
+import { checkIfWalletIsConnected } from 'src/scripts/utils/walletUtil';
 /*
  * If not building with SSR mode, you can
  * directly export the Router instantiation;
@@ -45,13 +45,19 @@ export default route(function (/* { store, ssrContext } */) {
           return;
         }
         next('/errorempty');
-      }
-      if (to.matched.some((record) => record.meta.requiresNoAuth)) {
+      } else if (to.matched.some((record) => record.meta.requiresNoAuth)) {
         if ($store.Account) {
           next('/');
           return;
         }
         next();
+      } else if (to.matched.some((record) => record.meta.requiresItemGated)) {
+        console.log('ItemGated');
+        if ($store.gatedResponseStatus === 201) {
+          next();
+          return;
+        }
+        next('/');
       } else {
         next();
       }
