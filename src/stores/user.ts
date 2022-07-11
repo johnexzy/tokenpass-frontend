@@ -1,10 +1,10 @@
+import axios from 'axios';
 import { defineStore } from 'pinia';
-import { userStore } from './types/storeTypes';
-
+import { userStore } from '../scripts/types/storeTypes';
+// import obj2fd from "obj2fd"
 export const useUserStore = defineStore('user', {
   state: (): userStore => ({
     openWalletModal: false,
-    openMintModal: false,
     chainMismatch: false,
     walletIsLoading: true,
     account: '',
@@ -16,6 +16,9 @@ export const useUserStore = defineStore('user', {
       state: false,
       msg: '',
     },
+    gatedResponseData: null,
+    gatedResponseStatus: 0,
+    gateItem: null,
   }),
 
   getters: {
@@ -40,8 +43,36 @@ export const useUserStore = defineStore('user', {
   },
 
   actions: {
-    // increment() {
-    //   this.counter++;
-    // },
+    formatAddress(address: string): string {
+      if (address) {
+        return address.substr(0, 5) + '...' + address.substr(-4);
+      }
+      return '';
+    },
+    async createGateItem(payload: object): Promise<void> {
+      await axios
+        .post('/items', payload)
+        .then((response) => {
+          console.log(response);
+          this.gatedResponseData = response.data;
+          this.gatedResponseStatus = response.status;
+        })
+        .catch((err) => {
+          console.log(err.response);
+          return err.status;
+        });
+    },
+    async getGateItem(slug: string): Promise<void> {
+      await axios
+        .get(`/items/${slug}`)
+        .then((response) => {
+          console.log(response);
+          this.gateItem = response.data;
+        })
+        .catch((err) => {
+          console.log(err.response);
+          return err.status;
+        });
+    },
   },
 });
