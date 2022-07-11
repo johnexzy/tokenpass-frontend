@@ -1,7 +1,7 @@
-import Web3 from "web3";
-import axios from "axios";
-import { checkIfWalletIsConnected } from "./wallet";
-import abi from "../abi";
+import Web3 from 'web3';
+import axios from 'axios';
+import { checkIfWalletIsConnected } from './walletUtil';
+import abi from '../abi';
 let TheOrigin = null;
 
 const getAbi = async () => {
@@ -34,13 +34,13 @@ const checkBalanceOfAddress = async (provider, address) => {
   return res;
 };
 const minter = async ({ from, imageHash }, $store, $r, banner) => {
-  $store.commit("utils/setIsTransacting", true);
+  $store.commit('utils/setIsTransacting', true);
 
   var provider = await checkIfWalletIsConnected($store);
   if (!provider) {
-    $store.commit("utils/setIsTransacting", false);
+    $store.commit('utils/setIsTransacting', false);
     banner.value.active = true;
-    banner.value.msg = "Unexpected Error Occurred";
+    banner.value.msg = 'Unexpected Error Occurred';
     window.location.reload();
     return false;
   }
@@ -59,24 +59,24 @@ const minter = async ({ from, imageHash }, $store, $r, banner) => {
     .send(transaction)
     .then((res) => {
       console.log(res);
-      $store.commit("utils/setAccountMinted", true);
-      $store.dispatch("utils/sendReciept", res);
-      $store.commit("utils/setReciept", res);
-      $store.commit("utils/setIsTransacting", false);
-      $r.push("/success");
+      $store.commit('utils/setAccountMinted', true);
+      $store.dispatch('utils/sendReciept', res);
+      $store.commit('utils/setReciept', res);
+      $store.commit('utils/setIsTransacting', false);
+      $r.push('/success');
     })
     .catch((err) => {
       if (
         err.message ===
-        "execution reverted: OnlyWhitelist: caller has previously minted"
+        'execution reverted: OnlyWhitelist: caller has previously minted'
       ) {
         banner.value.active = true;
-        banner.value.msg = "You have previously minted";
+        banner.value.msg = 'You have previously minted';
       }
       console.log(err.message);
       console.log(err.name);
     });
-  $store.commit("utils/setIsTransacting", false);
+  $store.commit('utils/setIsTransacting', false);
 };
 
 export { verifyWalletisOG, checkBalanceOfAddress, getAbi, minter };

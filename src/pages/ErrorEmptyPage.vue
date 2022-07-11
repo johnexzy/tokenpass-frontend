@@ -11,6 +11,7 @@
           </p>
           <div class="flex justify-center">
             <q-btn
+              @click="$store.openWalletModal = true"
               label="CONNECT WALLET"
               text-color="black"
               color="primary"
@@ -23,17 +24,16 @@
   </q-page>
 </template>
 
-
-
-<script lang="ts">
-import { defineComponent } from 'vue';
-
-export default defineComponent({
-  name: 'ErrorEmptyPage',
-  data() {
-    return {};
-  },
-  components: {},
-  methods: {},
+<script lang="ts" setup>
+import { watch, computed } from 'vue';
+import { useRouter } from 'vue-router';
+import { useUserStore } from '../stores/user';
+const $store = useUserStore();
+const $r = useRouter();
+const account = computed(() => $store.Account);
+watch(account, (val) => {
+  if (val !== '') {
+    $r.push('/');
+  }
 });
 </script>

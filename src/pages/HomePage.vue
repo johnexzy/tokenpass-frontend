@@ -1,7 +1,7 @@
 <template>
   <q-page>
     <section class="form-wrapper pt-100 pb-100">
-      <div class="container">
+      <q-form greedy class="container" v-on:submit.prevent="onFormSubmit">
         <h1 class="form-title">Add New Gated Content</h1>
         <p class="form-content q-mb-xl">
           Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur in
@@ -97,7 +97,7 @@
               class="bg-white"
               placeholder="Write a short description about your content"
               outlined
-              v-model="formData.description"
+              v-model="formData.tagline"
             />
           </div>
 
@@ -148,6 +148,7 @@
                 color="primary"
                 unelevated
                 icon="add"
+                v-show="!formData.token.length"
                 class="token-type-card-btn q-ma-md"
                 padding="lg"
                 text-color="black"
@@ -157,13 +158,18 @@
             </div>
           </div>
 
-          <div class="col-12 col-md-12 col-lg-12 q-mb-xl">
+          <div
+            class="col-12 col-md-12 col-lg-12 q-mb-xl"
+            v-show="
+              formData.token.filter((v) => v.blockchain === 'mainnet').length
+            "
+          >
             <label class="form-label" for=""
               ><q-checkbox
                 v-model="formData.subscription.allow"
                 color="primary"
               />
-              Allow Subscription
+              Allow Subscription (only applies to Ethereum based Tokens)
               <q-icon
                 color="grey-8"
                 class="pointer"
@@ -220,6 +226,7 @@
             <q-btn
               label="CREATE"
               unelevated
+              :loading="submiting"
               color="primary"
               text-color="black"
               class="full-width"
@@ -228,7 +235,7 @@
             />
           </div>
         </div>
-      </div>
+      </q-form>
     </section>
     <q-dialog v-model="addNewTokenModal" persistent>
       <q-card
@@ -287,7 +294,7 @@
               text-color="black"
               label="Add"
               color="primary"
-              @click="addNewToken(newToken)"
+              @click="addNewToken"
               :loading="isLoadingToken"
               unelevated
               style="width: 150px"
@@ -311,13 +318,23 @@
 
 <script lang="ts" setup>
 import FileUploader from 'src/components/FileUploader.vue';
-import { gatingFormData, tokenType } from 'src/stores/types/storeTypes';
+import {
+  gatingFormData,
+  tokenType,
+  tokenStandard,
+  tokenStandardOptions,
+  NetworkType,
+} from 'src/scripts/types/types';
 import { Ref, ref } from 'vue';
 import { useQuasar } from 'quasar';
-// import { checkIfWalletIsConnected } from 'src/scripts/wallet_util';
-import TokenUtils from 'src/scripts/contractUtils';
+import TokenUtils, { newToken } from 'src/scripts/utils/contractUtils';
+import { useUserStore } from '../stores/user';
 
+import Networks from 'src/scripts/networks/network';
+import { useRouter } from 'vue-router';
 const $q = useQuasar();
+const $r = useRouter();
+const $store = useUserStore();
 const formData: Ref<gatingFormData> = ref({
   title: '',
   type: 'link',
@@ -325,6 +342,7 @@ const formData: Ref<gatingFormData> = ref({
   description: '',
   tagline: '',
   gating: '',
+  creator_address: $store.Account,
   subscription: {
     allow: false,
     price: 0,
@@ -333,14 +351,10 @@ const formData: Ref<gatingFormData> = ref({
   token: [],
 });
 
-const newToken: Ref<tokenType> = ref({
-  blockchain: '',
-  token_standard: '',
-  contract_address: '',
-  token_id: '',
-  amount_required: '',
-});
-const token_standard = [
+const newTokenObj: Ref<
+  tokenType<tokenStandardOptions<tokenStandard>, NetworkType>
+> = ref(newToken);
+const token_standard: tokenStandardOptions<tokenStandard>[] = [
   {
     label: 'ERC1155',
     value: 'erc1155',
@@ -354,24 +368,7 @@ const token_standard = [
     value: 'erc20',
   },
 ];
-const blockchain = [
-  {
-    label: 'Ethereum',
-    value: 'eth',
-  },
-  {
-    label: 'Polygon',
-    value: 'polygon',
-  },
-  {
-    label: 'Binance',
-    value: 'bsc',
-  },
-  {
-    label: 'DAI',
-    value: 'dai',
-  },
-];
+
 const addNewTokenModal = ref(false);
 const isLoadingToken = ref(false);
 const itemTypes: { value: string; label: string; icon: string }[] = [
@@ -410,12 +407,13 @@ function selectTokenType(value: string) {
   }
 }
 
-function addNewToken(token: tokenType) {
+async function addNewToken() {
   isLoadingToken.value = true;
 
   //check if address is valid
-  if (!TokenUtils.isValidAddress(token.contract_address)) {
+  if (!TokenUtils.isValidAddress(newTokenObj.value.contract_address)) {
     isLoadingToken.value = false;
+
     $q.notify({
       color: 'red',
       message: 'Please enter a valid address',
@@ -424,24 +422,40 @@ function addNewToken(token: tokenType) {
 
     return;
   }
-  formData.value.token.push(token);
-  newToken.value = {
-    blockchain: '',
-    token_standard: '',
-    contract_address: '',
-    token_id: '',
-    amount_required: '',
-  };
+  console.log(newTokenObj.value);
+  const tc = new TokenUtils(
+    $store,
+    newTokenObj.value.token_standard.value,
+    newTokenObj.value.contract_address,
+    newTokenObj.value.blockchain.value
+  );
+
+  // get Token Name
+  newTokenObj.value.token_name = await tc.getTokenName();
+
+  // destructure blockchain and token_standard
+  const { blockchain, token_standard } = newTokenObj.value;
+
+  // save token details
+  formData.value.token.push({
+    ...newTokenObj.value,
+    token_standard: token_standard.value,
+    blockchain: blockchain.value,
+  });
+
+  // reset addnew token form
+  resetAddTokenForm();
   isLoadingToken.value = false;
   addNewTokenModal.value = false;
 }
+
 function format_address(account: string) {
   return account.substr(0, 5) + '...' + account.substr(-4);
 }
 
-function removeToken(token: tokenType) {
+function removeToken(token: tokenType<tokenStandard, string>) {
   $q.dialog({
-    title: 'Delete `' + format_address(token.contract_address) + '` ?',
+    title: 'Delete `' + token.token_name + '` ?',
     message: '',
     cancel: true,
     persistent: true,
@@ -483,5 +497,34 @@ function resetAddTokenForm() {
     amount_required: '',
     token_name: '',
   };
+}
+const submiting = ref(false);
+async function onFormSubmit() {
+  submiting.value = true;
+  const { title, type, token, creator_address, tagline, description } =
+    formData.value;
+  const fD = {
+    title,
+    type,
+    creator_address,
+    tagline,
+    description,
+    ...token[0],
+  };
+  // fD['token_id'] = token[0].token_id
+  console.log(JSON.stringify(fD));
+  await $store
+    .createGateItem(fD)
+    .then(() => {
+      if ($store.gatedResponseStatus === 201) {
+        $r.push('/fileuploaded');
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+    })
+    .finally(() => {
+      submiting.value = false;
+    });
 }
 </script>
