@@ -1,6 +1,6 @@
 <template>
   <q-page>
-    <section class="fileupload-page-wrapper pt-100 pb-100">
+    <section v-if="user" class="fileupload-page-wrapper pt-100 pb-100">
       <div class="container">
         <div class="fileupload-card">
           <div class="text-center q-mb-lg">
@@ -24,24 +24,23 @@
               class="fileupload-link text-center q-mr-md"
               to="https://tokenpass.ai/link/iEutYiQ390"
               target="_blank"
-              >https://tokenpass.ai/link/iEutYiQ390</router-link
+              >https://tokenpass.ai/d/{{ user.slug }}</router-link
             >
             <q-btn
               flat
               round
               size="sm"
               @click="copyURL('https://tokenpass.ai/link/iEutYiQ390')"
-              ><svg
+            >
+              <svg
                 width="20"
                 viewBox="0 0 24 24"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
               >
-                <path
-                  d="M0 8H16V24H0V8ZM8 0V4H20V16H24V0H8Z"
-                  fill="#212121"
-                /></svg
-            ></q-btn>
+                <path d="M0 8H16V24H0V8ZM8 0V4H20V16H24V0H8Z" fill="#212121" />
+              </svg>
+            </q-btn>
             <transition
               appear
               enter-active-class="animated fadeInRight"
@@ -128,33 +127,35 @@
   </q-page>
 </template>
 
-
-
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, ref } from 'vue';
 import { copyToClipboard } from 'quasar';
-
+import { useUserStore } from '../stores/user';
 export default defineComponent({
   name: 'FileUploadedPage',
-  data() {
-    return {
-      URLCopyTooltip: false,
-    };
-  },
-  components: {},
-  methods: {
-    copyURL(val: string) {
-      this.URLCopyTooltip = true;
+  setup() {
+    const URLCopyTooltip = ref(false);
+
+    const $userStore = useUserStore();
+    const user = $userStore.gatedResponseData;
+
+    function copyURL(val: string) {
+      URLCopyTooltip.value = true;
       copyToClipboard(val)
         .then(() => {
           setTimeout(() => {
-            this.URLCopyTooltip = false;
+            URLCopyTooltip.value = false;
           }, 500);
         })
         .catch(() => {
-          this.URLCopyTooltip = false;
+          URLCopyTooltip.value = false;
         });
-    },
+    }
+    return {
+      copyURL,
+      URLCopyTooltip,
+      user,
+    };
   },
 });
 </script>

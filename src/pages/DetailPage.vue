@@ -17,10 +17,13 @@
             </svg>
           </div>
           <h1 class="detail-section-title text-center q-mb-lg">
-            A Private trip to Zanzibar
+            {{ store.gateItem?.title }}
           </h1>
           <div class="text-subtitle1 text-center q-mb-lg">
-            Created by <span class="text-blue">0x345f...2050</span>
+            Created by
+            <span class="text-blue">{{
+              store.formatAddress(gateItem.creator_address)
+            }}</span>
           </div>
           <ul class="detail-wrapper-text q-mb-lg">
             <li class="row items-center">
@@ -35,7 +38,9 @@
                   fill="#212121"
                 />
               </svg>
-              <span class="text-grey-6 q-ml-sm">10mins ago</span>
+              <span class="text-grey-6 q-ml-sm">{{
+                timeAgo(gateItem.updated_at)
+              }}</span>
             </li>
             <li class="row items-center q-mx-md">
               <svg
@@ -128,19 +133,35 @@
                 />
               </svg>
             </div>
-            <div class="text-subtitle1 text-center text-weight-medium q-mb-md">
-              This content is reserved for Afro Apes (The Origin) <br />
-              NFT holders.
+            <div
+              class="text-subtitle1 text-center text-weight-medium q-mb-md"
+              v-for="(g, i) in store.gateItem?.gate"
+              :key="i"
+            >
+              This content is reserved for "{{ g.token_name }}" <br />
+              holders.
             </div>
             <div class="flex justify-center q-mb-md">
               <q-btn
-                @click="lockContent = false"
+                @click="store.openWalletModal = true"
+                :loading="unlocking"
                 text-color="#000"
                 color="primary"
-                label="UNLOCK FOR 0.03 ETH"
+                icon="lock"
+                v-if="!store.account"
+                label="Connect Wallet to Unlock"
+              />
+              <q-btn
+                v-else
+                @click="checkAccess"
+                :loading="unlocking"
+                text-color="#000"
+                color="primary"
+                icon="lock"
+                label="UNLOCK"
               />
             </div>
-            <div class="text-negative text-center">
+            <div class="text-negative text-center" v-show="showDeniedAccess">
               Sorry, you do not have permission to access this content
             </div>
           </div>
@@ -151,30 +172,132 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
-
+import { defineComponent, ref, Ref } from 'vue';
+import { useUserStore } from '../stores/user';
+import { date, DateUnitOptions } from 'quasar';
+import { gatedResponseData } from 'src/scripts/types/types';
+import { utils } from 'ethers';
+import TokenUtils from '../scripts/utils/contractUtils';
 export default defineComponent({
   name: 'DetailPage',
-  data() {
-    return {
-      videoPlay: false,
-      lockContent: true,
-      contentText:
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur in pulvinar massa. Sed sed mauris eget nisi lacinia condimentum vel accumsan nulla. Sed ut congue odio. Maecenas id augue posuere, rutrum enim eu, hendrerit risus. Praesent non urna ut ligula consectetur euismod ac sit amet orci. . Sed ut congue odio. Maecenas id augue posuere, rutrum enim eu, hendrerit risus. Praesent non urna ut ligula consectetur euismod ac sit amet orci. . Sed ut congue odio. Maecenas id augue posuere, rutrum enim eu, hendrerit risus. Praesent non urna ut ligula consectetur euismod ac sit amet orci. . Sed ut congue odio. Maecenas id augue posuere, rutrum enim eu, hendrerit risus. Praesent non urna ut ligula consectetur euismod ac sit amet orci.',
-    };
+  async preFetch({ currentRoute }) {
+    const user = useUserStore();
+    await user.getGateItem(currentRoute.params.slug as string);
   },
-  components: {},
-  methods: {
-    playVid() {
-      var video = this.$refs['backgroundVideo'];
-      if (this.videoPlay == true) {
+  setup() {
+    const store = useUserStore();
+    const showDeniedAccess = ref(false);
+    const unlocking = ref(false);
+    const backgroundVideo: Ref<null | { play: () => void; pause: () => void }> =
+      ref(null);
+    const videoPlay = ref(false);
+    const lockContent = ref(true);
+    const playVid = () => {
+      const video: { play: () => void; pause: () => void } =
+        backgroundVideo.value as { play: () => void; pause: () => void };
+      console.log(video);
+      // const
+      if (videoPlay.value == true) {
         video.pause();
-        this.videoPlay = false;
+        videoPlay.value = false;
       } else {
         video.play();
-        this.videoPlay = true;
+        videoPlay.value = true;
       }
-    },
+    };
+    const timeAgo = (
+      str: string,
+      unit: 'days' | 'minutes' | 'hours' | 'months' = 'minutes'
+    ): string => {
+      // alert("john")
+
+      const dateNow = new Date();
+      const datOfPost = new Date(str);
+      // const unit = 'min'
+
+      const diff = date.getDateDiff(dateNow, datOfPost, unit);
+      const formattedString = {
+        years: "yrs'",
+        days: "days ago'",
+        minutes: 'mins ago',
+        hours: 'hrs ago',
+        months: "mth'",
+      };
+      // alert(diff)
+      if (diff >= 60 && unit === 'minutes') {
+        return timeAgo(str, 'hours');
+        // alert("minutes")
+      }
+      if (diff >= 24 && unit === 'hours') {
+        return timeAgo(str, 'days');
+        // alert("hours")
+      }
+      if (diff >= 28 && unit === 'days') {
+        return timeAgo(str, 'months');
+      } else {
+        if (unit === 'months') {
+          return datOfPost.toDateString();
+        }
+        return `${diff} ${formattedString[unit]}`;
+      }
+      // return `${diff} ${unit} ago`
+    };
+
+    const gateItem = store.gateItem as gatedResponseData;
+
+    // Prepare Access Token
+    const AccessToken = ref([
+      gateItem.gate[0].contract_address,
+      gateItem.creator_address,
+      utils
+        .formatBytes32String(gateItem.gate[0].token_standard.toUpperCase())
+        .toString(),
+      gateItem.gate[0].token_requirements[0].token_id,
+      [false, utils.parseEther('0.1'), 2592000],
+      gateItem.gate[0].token_requirements[0].amount_required,
+    ]);
+
+    const tc = new TokenUtils(
+      store,
+      gateItem.gate[0].token_standard,
+      gateItem.gate[0].contract_address,
+      gateItem.gate[0].blockchain
+    );
+
+    const checkAccess = async (): Promise<boolean> => {
+      unlocking.value = true;
+      try {
+        const access: boolean = await (
+          await tc.tokenGateContract()
+        ).checkAccess(AccessToken.value, store.account);
+        console.log(access);
+        unlocking.value = false;
+        if (!access) {
+          showDeniedAccess.value = true;
+        }
+        lockContent.value = !access;
+
+        return access;
+      } catch (error: any) {
+        console.log(error.message);
+        return false;
+      } finally {
+        unlocking.value = false;
+      }
+    };
+    return {
+      backgroundVideo,
+      checkAccess,
+      playVid,
+      store,
+      showDeniedAccess,
+      gateItem,
+      timeAgo,
+      videoPlay,
+      unlocking,
+      lockContent,
+      contentText: gateItem.description,
+    };
   },
 });
 </script>
